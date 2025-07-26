@@ -10,7 +10,8 @@ import sqlite3
 # --- KONFIGURASI DASAR ---
 st.set_page_config(layout="wide", page_title="LetsTracker")
 DB_FILE = "letstracker.db"
-PARTICIPANTS = ["Sahrul", "Umam", "Fatih", "Fahmi", "El", "Taqi", "Bang Abror", "Bang Habib", "Bang Yafie", "Bang Yudo"]
+# --- PERUBAHAN: Menambahkan placeholder ---
+PARTICIPANTS = ["Pilih Nama..."] + ["Sahrul", "Umam", "Fatih", "Fahmi", "El", "Taqi", "Bang Abror", "Bang Habib", "Bang Yafie", "Bang Yudo"]
 HABITS = {
     "Juz 30 (Hafalan/Murajaah)": "daily", "Hadis Arbain 1-25": "daily", "Tilawah 1/2 Juz": "daily",
     "Al-Matsurat (Pagi/Sore)": "daily", "Qiyamulail": "weekly", "Olahraga": "weekly", "Shaum Sunnah": "monthly"
@@ -134,9 +135,18 @@ if 'show_success' not in st.session_state: st.session_state.show_success = False
 
 with st.sidebar:
     st.header("👤 Pengguna")
-    username = st.selectbox("Pilih Nama Peserta", options=PARTICIPANTS)
-    st.header("🗓️ Pilih Tanggal Input")
-    selected_date_input = st.date_input("Pilih tanggal untuk diisi", value=datetime.now().date())
+    # --- PERUBAHAN: Menggunakan placeholder ---
+    username = st.selectbox("Pilih Nama Peserta", options=PARTICIPANTS, index=0)
+    
+    # --- PERUBAHAN: Hanya tampilkan sisa sidebar jika nama sudah dipilih ---
+    if username != "Pilih Nama...":
+        st.header("🗓️ Pilih Tanggal Input")
+        selected_date_input = st.date_input("Pilih tanggal untuk diisi", value=datetime.now().date())
+
+# --- PERUBAHAN: Hanya jalankan aplikasi utama jika nama sudah dipilih ---
+if username == "Pilih Nama...":
+    st.info("👈 Silakan pilih nama Anda di sidebar untuk memulai.")
+    st.stop()
 
 df = load_data(username)
 
